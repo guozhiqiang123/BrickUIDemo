@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="cp_colorTheme">#FFFFFF</color>
+    <integer-array name="progressColors">
+        <item>@color/cp_colorTheme</item>
+        <item>@color/cp_colorTheme</item>
+        <item>@color/cp_colorTheme</item>
+    </integer-array>
+</resources>

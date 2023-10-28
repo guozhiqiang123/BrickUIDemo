@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">brickui</string>
+    <string name="welcome_to_us">Welcome to\n%s!</string>
+</resources>
