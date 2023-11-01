@@ -22,7 +22,6 @@ import com.example.brickui.theme.colorText
 import com.example.brickui.theme.colorTextGrey
 import com.example.brickui.theme.colorTextRed
 import com.google.android.material.appbar.AppBarLayout
-import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.header.ClassicsHeader
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.seewo.brick.ktx.MATCH_PARENT
@@ -68,186 +67,182 @@ fun Context.tab2FragmentUI(
     onRefresh: (RefreshLayout) -> Unit,
     onClickBanner: ((HomeModel.Banner, Int) -> Unit)? = null,
     onTabPageChanged: ((GameTabModel) -> Unit)? = null,
-) = frameLayout(MATCH_PARENT, MATCH_PARENT) {
-    smartRefresh(
-        refreshHeader = ClassicsHeader(context)
-            .setDrawableSize(12f)
-            .setDrawableMarginRight(8f)
-            .setTextSizeTitle(TypedValue.COMPLEX_UNIT_DIP, 12f)
-            .setAccentColor(Color.parseColor("#AAAAAA"))
-            .setEnableLastTime(false),
-        onRefresh = onRefresh,
-        loadMoreEnable = false
-    ) {
+) = smartRefresh(
+    refreshHeader = ClassicsHeader(this)
+        .setDrawableSize(12f)
+        .setDrawableMarginRight(8f)
+        .setTextSizeTitle(TypedValue.COMPLEX_UNIT_DIP, 12f)
+        .setAccentColor(Color.parseColor("#AAAAAA"))
+        .setEnableLastTime(false),
+    onRefresh = onRefresh,
+    loadMoreEnable = false
+) {
 
-        coordinatorLayout {
-            appBarLayout {
-                layoutParams(scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL) {
-                    column(MATCH_PARENT, MATCH_PARENT) {
+    coordinatorLayout {
+        appBarLayout {
+            layoutParams(scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL) {
+                column(MATCH_PARENT, MATCH_PARENT) {
 
-                        //Banner广告
-                        constraintLayout(MATCH_PARENT, WRAP_CONTENT, id = 0x100) {
+                    //Banner广告
+                    constraintLayout(MATCH_PARENT, WRAP_CONTENT, id = 0x100) {
 
-                            layoutParams({
-                                topToTop = 0x1100
-                                startToStart = 0x100
-                                endToEnd = 0x100
-                                dimensionRatio = "h, 2:1"
-                            }) {
-                                bannerView(id = 0x101, height = 0.dp, onClick = onClickBanner) {
-                                    bannerData.bindNotNull(context) { setDatas(it) }
-                                }
+                        layoutParams({
+                            topToTop = 0x1100
+                            startToStart = 0x100
+                            endToEnd = 0x100
+                            dimensionRatio = "h, 2:1"
+                        }) {
+                            bannerView(id = 0x101, height = 0.dp, onClick = onClickBanner) {
+                                bannerData.bindNotNull(context) { setDatas(it) }
                             }
                         }
+                    }
 
-                        //探索标题
-                        row(
+                    //探索标题
+                    row(
+                        MATCH_PARENT,
+                        50.dp,
+                        padding = EdgeInsets.only(start = 16.dp)
+                    ) {
+                        textView(
+                            text = "探索",
+                            textColor = colorText,
+                            textStyle = Typeface.BOLD,
+                            textSize = 20.sp
+                        )
+                        expand()
+                        textView(
+                            60.dp,
                             MATCH_PARENT,
-                            50.dp,
-                            padding = EdgeInsets.only(start = 16.dp)
+                            text = "更多",
+                            textSize = 14.sp,
+                            textStyle = Typeface.BOLD,
+                            textColor = colorTextRed,
+                            foreground = R.drawable.ripple_grey_2dp.drawable,
+                            gravity = Gravity.CENTER
                         ) {
-                            textView(
-                                text = "探索",
-                                textColor = colorText,
-                                textStyle = Typeface.BOLD,
-                                textSize = 20.sp
-                            )
-                            expand()
-                            textView(
-                                60.dp,
-                                MATCH_PARENT,
-                                text = "更多",
-                                textSize = 14.sp,
-                                textStyle = Typeface.BOLD,
-                                textColor = colorTextRed,
-                                foreground = R.drawable.ripple_grey_2dp.drawable,
-                                gravity = Gravity.CENTER
-                            ) {
-                                toast("点击了更多")
+                            toast("点击了更多")
+                        }
+                    }
+
+                    //探索
+                    liveSimpleRecyclerView(
+                        MATCH_PARENT,
+                        WRAP_CONTENT,
+                        layoutManager = GridLayoutManager(context, 4),
+                        data = exploreData,
+                        itemDecoration = gridSpaceDecoration(12.dp, 12.dp),
+                        padding = EdgeInsets.symmetric(horizontal = 16.dp)
+                    ) { data, index ->
+
+                        ovalClip {
+                            glideImage(urlOrPath = data[index].image) {
+                                imageView(MATCH_PARENT, WRAP_CONTENT)
                             }
                         }
+                    }
 
-                        //探索
-                        liveSimpleRecyclerView(
+                    //海报
+                    roundRectClip(radius = 8.dp) {
+                        imageView(
                             MATCH_PARENT,
                             WRAP_CONTENT,
-                            layoutManager = GridLayoutManager(context, 4),
-                            data = exploreData,
-                            itemDecoration = gridSpaceDecoration(12.dp, 12.dp),
-                            padding = EdgeInsets.symmetric(horizontal = 16.dp)
-                        ) { data, index ->
-
-                            ovalClip {
-                                glideImage(urlOrPath = data[index].image) {
-                                    imageView(MATCH_PARENT, WRAP_CONTENT)
-                                }
+                            margin = EdgeInsets.all(16.dp)
+                        ).apply {
+                            eventData.bindNotNull(context) {
+                                Glide.with(context)
+                                    .load(it.image)
+                                    .into(this)
                             }
                         }
-
-                        //海报
-                        roundRectClip(radius = 8.dp) {
-                            imageView(
-                                MATCH_PARENT,
-                                WRAP_CONTENT,
-                                margin = EdgeInsets.all(16.dp)
-                            ).apply {
-                                eventData.bindNotNull(context) {
-                                    Glide.with(context)
-                                        .load(it.image)
-                                        .into(this)
-                                }
-                            }
-                        }
-
-                        //最新折扣标题
-                        textView(
-                            MATCH_PARENT,
-                            50.dp,
-                            text = "最新折扣",
-                            textSize = 20.sp,
-                            textStyle = Typeface.BOLD,
-                            textColor = colorText,
-                            padding = EdgeInsets.symmetric(horizontal = 16.dp),
-                            gravity = Gravity.CENTER_VERTICAL
-                        )
                     }
-                }
 
-                layoutParams(scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL) {
-                    val tabColorState = stateListColor(
-                        mapOf(
-                            intArrayOf(-android.R.attr.state_selected) to colorTextGrey,
-                            intArrayOf(android.R.attr.state_selected) to colorText
-                        )
+                    //最新折扣标题
+                    textView(
+                        MATCH_PARENT,
+                        50.dp,
+                        text = "最新折扣",
+                        textSize = 20.sp,
+                        textStyle = Typeface.BOLD,
+                        textColor = colorText,
+                        padding = EdgeInsets.symmetric(horizontal = 16.dp),
+                        gravity = Gravity.CENTER_VERTICAL
                     )
-                    liveSimpleRecyclerView(
-                        MATCH_PARENT, 50.dp,
-                        data = tabsData,
-                        layoutManager = LinearLayoutManager(
-                            context,
-                            LinearLayoutManager.HORIZONTAL,
-                            false
-                        ),
-                        viewHolderCreator = {
-                            frameLayout { }
-                        }
-                    ) { data, index ->
-                        val itemModel = data[index]
-                        column(
-                            gravity = Gravity.CENTER,
-                            padding = EdgeInsets.symmetric(
-                                horizontal = 16.dp,
-                                vertical = 4.dp
-                            ),
-                            onClick = {
-                                onTabPageChanged?.invoke(itemModel)
-                            }
-                        ) {
-                            textView(
-                                text = itemModel.tab.title,
-                                textColorList = tabColorState,
-                                textSize = 18.sp,
-                                textStyle = Typeface.BOLD
-                            ).apply {
-                                isSelected = itemModel.isSelect
-                            }
-                            textView(
-                                text = itemModel.tab.count.toString(),
-                                textColorList = tabColorState,
-                                textSize = 12.sp,
-                                padding = EdgeInsets.symmetric(horizontal = 6.dp),
-                                background = rectDrawable(
-                                    strokeColor = if (itemModel.isSelect) colorText else colorTextGrey,
-                                    strokeWidth = 1.dp,
-                                    corners = CornerRadius.all(20.dp)
-                                )
-                            ).apply {
-                                isSelected = itemModel.isSelect
-                            }
-                        }
-                    }
                 }
             }
 
-            scrollingView {
-                liveFragmentPager(
-                    MATCH_PARENT,
-                    MATCH_PARENT,
+            layoutParams(scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL) {
+                val tabColorState = stateListColor(
+                    mapOf(
+                        intArrayOf(-android.R.attr.state_selected) to colorTextGrey,
+                        intArrayOf(android.R.attr.state_selected) to colorText
+                    )
+                )
+                liveSimpleRecyclerView(
+                    MATCH_PARENT, 50.dp,
                     data = tabsData,
-                    currentIndex = currentTabIndex,
-                    onPageSelected = { onTabPageChanged?.invoke(tabsData.data[it]) }
+                    layoutManager = LinearLayoutManager(
+                        context,
+                        LinearLayoutManager.HORIZONTAL,
+                        false
+                    ),
+                    viewHolderCreator = {
+                        frameLayout { }
+                    }
                 ) { data, index ->
-                    TabListFragment().apply {
-                        arguments = bundleOf(TabListFragment.ARG_DATA to data[index])
+                    val itemModel = data[index]
+                    column(
+                        gravity = Gravity.CENTER,
+                        padding = EdgeInsets.symmetric(
+                            horizontal = 16.dp,
+                            vertical = 4.dp
+                        ),
+                        onClick = {
+                            onTabPageChanged?.invoke(itemModel)
+                        }
+                    ) {
+                        textView(
+                            text = itemModel.tab.title,
+                            textColorList = tabColorState,
+                            textSize = 18.sp,
+                            textStyle = Typeface.BOLD
+                        ).apply {
+                            isSelected = itemModel.isSelect
+                        }
+                        textView(
+                            text = itemModel.tab.count.toString(),
+                            textColorList = tabColorState,
+                            textSize = 12.sp,
+                            padding = EdgeInsets.symmetric(horizontal = 6.dp),
+                            background = rectDrawable(
+                                strokeColor = if (itemModel.isSelect) colorText else colorTextGrey,
+                                strokeWidth = 1.dp,
+                                corners = CornerRadius.all(20.dp)
+                            )
+                        ).apply {
+                            isSelected = itemModel.isSelect
+                        }
                     }
                 }
             }
         }
-    }.apply {
-        autoRefresh(0)
+
+        scrollingView {
+            liveFragmentPager(
+                MATCH_PARENT,
+                MATCH_PARENT,
+                data = tabsData,
+                currentIndex = currentTabIndex,
+                onPageSelected = { onTabPageChanged?.invoke(tabsData.data[it]) }
+            ) { data, index ->
+                TabListFragment().apply {
+                    arguments = bundleOf(TabListFragment.ARG_DATA to data[index])
+                }
+            }
+        }
     }
-
-
+}.apply {
+    autoRefresh(0)
 }
 
 /**

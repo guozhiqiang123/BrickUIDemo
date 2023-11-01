@@ -160,56 +160,50 @@ fun Context.TabListUI(
     gameData: LiveData<List<GameListModel>>,
     onLoadMore: ((RefreshLayout) -> Unit)? = null,
     onClickItem: (GameListModel, Int) -> Unit
-) =
-    frameLayout(MATCH_PARENT, MATCH_PARENT) {
-        gameData.bindNotNull(context) {
-            Log.d(BrickApp.TAG, "TabListUI: 数据数量：" + it.size)
-        }
-        smartRefresh(
-            refreshEnable = false,
-            refreshFooter = ClassicsFooter(context)
-                .setDrawableSize(12f)
-                .setDrawableMarginRight(8f)
-                .setTextSizeTitle(TypedValue.COMPLEX_UNIT_DIP, 12f)
-                .setAccentColor(Color.parseColor("#AAAAAA")),
-            onLoadMore = onLoadMore
-        ) {
-            column(MATCH_PARENT, MATCH_PARENT) {
-                liveRecyclerView(
-                    MATCH_PARENT,
-                    MATCH_PARENT,
-                    itemDecoration = dividerDecoration(
-                        orientation = LinearLayoutManager.VERTICAL,
-                        height = 12.dp,
-                    ),
-                    data = gameData,
-                    viewTypeBuilder = { 0 },
-                    viewBuilder = { GameItemUI() }) { data, position, view ->
-                    val model = data[position].gameModel
-                    Glide.with(context)
-                        .load(model.img)
-                        .into(view.findViewById<ImageView>(0x101))
-                    view.findViewById<TextView>(0x102).text = model.name
-                    view.findViewById<TextView>(0x103).text = model.getLabelDesc()
-                    view.findViewById<TextView>(0x104).text = model.getPriceDesc()
-                    view.findViewById<ImageView>(0x105).isVisible = model.commend != 0
-                    view.findViewById<TextView>(0x106).text = model.grade.toString()
-                    view.findViewById<TextView>(0x106).isVisible = model.grade != 0
-                    view.findViewById<TextView>(0X107).text = model.getDiscountDesc()
-                    view.findViewById<TextView>(0X108).text = model.getRemainDate()
+) = smartRefresh(
+    refreshEnable = false,
+    refreshFooter = ClassicsFooter(this)
+        .setDrawableSize(12f)
+        .setDrawableMarginRight(8f)
+        .setTextSizeTitle(TypedValue.COMPLEX_UNIT_DIP, 12f)
+        .setAccentColor(Color.parseColor("#AAAAAA")),
+    onLoadMore = onLoadMore
+) {
+    column(MATCH_PARENT, MATCH_PARENT) {
+        liveRecyclerView(
+            MATCH_PARENT,
+            MATCH_PARENT,
+            itemDecoration = dividerDecoration(
+                orientation = LinearLayoutManager.VERTICAL,
+                height = 12.dp,
+            ),
+            data = gameData,
+            viewTypeBuilder = { 0 },
+            viewBuilder = { GameItemUI() }) { data, position, view ->
+            val model = data[position].gameModel
+            Glide.with(context)
+                .load(model.img)
+                .into(view.findViewById<ImageView>(0x101))
+            view.findViewById<TextView>(0x102).text = model.name
+            view.findViewById<TextView>(0x103).text = model.getLabelDesc()
+            view.findViewById<TextView>(0x104).text = model.getPriceDesc()
+            view.findViewById<ImageView>(0x105).isVisible = model.commend != 0
+            view.findViewById<TextView>(0x106).text = model.grade.toString()
+            view.findViewById<TextView>(0x106).isVisible = model.grade != 0
+            view.findViewById<TextView>(0X107).text = model.getDiscountDesc()
+            view.findViewById<TextView>(0X108).text = model.getRemainDate()
 
-                    view.setOnClickListener {
-                        onClickItem(data[position], position)
-                    }
-                }.apply {
-                    /**
-                     * 关闭动画是为了全量刷新不会闪烁，因为在GameListModel#areSameItem永远是false，则不符合正常开发规则
-                     */
-                    itemAnimator = null
-                }
+            view.setOnClickListener {
+                onClickItem(data[position], position)
             }
+        }.apply {
+            /**
+             * 关闭动画是为了全量刷新不会闪烁，因为在GameListModel#areSameItem永远是false，则不符合正常开发规则
+             */
+            itemAnimator = null
         }
     }
+}
 
 class GameItemPreview(context: Context, attributeSet: AttributeSet?) :
     BrickPreview(context, attributeSet) {

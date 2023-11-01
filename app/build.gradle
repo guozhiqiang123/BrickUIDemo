@@ -44,7 +44,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     //brickui https://github.com/robin8yeung/BrickUI
-    def brickui='0.2.19'
+    def brickui='0.2.22'
     implementation "com.github.robin8yeung.BrickUI:brick-ui:$brickui"
     implementation "com.github.robin8yeung.BrickUI:brick-ui-smart-refresh:$brickui" // 非必须 基于BrickUI封装了SmartRefreshLayout
     implementation "com.github.robin8yeung.BrickUI:brick-ui-live:$brickui" // 非必须 基于LiveData封装BrickUI
